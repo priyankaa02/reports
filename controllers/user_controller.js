@@ -1,30 +1,53 @@
 var express = require('express');
 var router = express.Router();
-var db = require('../database_config/db_connect');
+var mongoose = require('mongoose');
+var con = 'mongodb+srv://priyanka:ginni0207@cluster0-gbjzd.mongodb.net/mydb?retryWrites=true&w=majority';
+var result = [];
+let jsonData = require('./convertcsv.json');
 
 exports.largestInvoice = function(req, res){
-  db.collection("sales").find({}).toArray(function(err, data) {
-    if (err) throw err;
-    console.log(data);
-    var lookup = {};
-    var items = data;
-    var result = [];
-    var totalPrice = ''
+  // mongoose.connect(con, (err, db) => {
+  //     db.collection('sales').find().toArray(function(err, data) {
+  //       if (err) throw err;
+  //       console.log(data);
+  //       var lookup = {};
+  //       var items = data;
+  //       var totalPrice = ''
+  //
+  //       for (var item, i = 0; item = items[i++];) {
+  //         var name = item.order_for;
+  //
+  //         if (!this[item.order_for]) {
+  //           this[item.order_for] = { name: item.order_for, total_price: 0 };
+  //           result.push(this[item.order_for]);
+  //          }
+  //          this[item.order_for].total_price += item.total_price;
+  //       }
+  //
+  //       result = sort_by_key(result, 'total_price');
+  //       res.status(200).send(result);
+  //       db.close();
+  //     });
+  //
+  // });
 
-    for (var item, i = 0; item = items[i++];) {
-      var name = item.order_for;
+          var lookup = {};
+          var items = jsonData;
+          var totalPrice = ''
 
-      if (!this[item.order_for]) {
-        this[item.order_for] = { name: item.order_for, total_price: 0 };
-        result.push(this[item.order_for]);
-       }
-       this[item.order_for].total_price += item.total_price;
-    }
+          for (var item, i = 0; item = items[i++];) {
+            var name = item.order_for;
 
-    result = sort_by_key(result, 'total_price');
-    res.status(200).send(result);
-    db.close();
-  });
+            if (!this[item.order_for]) {
+              this[item.order_for] = { name: item.order_for, total_price: 0 };
+              result.push(this[item.order_for]);
+             }
+             this[item.order_for].total_price += item.total_price;
+          }
+
+          result = sort_by_key(result, 'total_price');
+          res.status(200).send(result);
+
 }
 
 function sort_by_key(array, key)
@@ -37,25 +60,20 @@ function sort_by_key(array, key)
 }
 
 exports.largestUnits = function(req, res){
-  db.collection("sales").find({}).toArray(function(err, data) {
-    if (err) throw err;
-    console.log(data);
-    var lookup = {};
-    var items = data;
-    var result = [];
+      var lookup = {};
+      var items = jsonData;
 
-    for (var item, i = 0; item = items[i++];) {
-      var name = item.order_for;
+      for (var item, i = 0; item = items[i++];) {
+        var name = item.order_for;
 
-      if (!this[item.order_for]) {
-        this[item.order_for] = { name: item.order_for, total_units: 0 };
-        result.push(this[item.order_for]);
-       }
-       this[item.order_for].total_units += Math.ceil(item.total_units);
-    }
+        if (!this[item.order_for]) {
+          this[item.order_for] = { name: item.order_for, total_units: 0 };
+          result.push(this[item.order_for]);
+         }
+         this[item.order_for].total_units += Math.ceil(item.total_units);
+      }
 
-    result = sort_by_key(result, 'total_units');
-    res.status(200).send(result);
-    db.close();
-  });
+      result = sort_by_key(result, 'total_units');
+      res.status(200).send(result);
+
 }
