@@ -3,8 +3,8 @@ var router = express.Router();
 var mongoose = require('mongoose');
 var con = 'mongodb+srv://priyanka:ginni0207@cluster0-gbjzd.mongodb.net/mydb?retryWrites=true&w=majority';
 let jsonData = require('./convertcsv.json');
-var invoice = [];
-var result = [];
+let invoice1 = [];
+let result = []
 
 exports.largestInvoice = function(req, res){
   // mongoose.connect(con, (err, db) => {
@@ -31,7 +31,6 @@ exports.largestInvoice = function(req, res){
   //     });
   //
   // });
-
           var lookup = {};
           var items = jsonData;
 
@@ -40,13 +39,13 @@ exports.largestInvoice = function(req, res){
 
             if (!this[item.order_for]) {
               this[item.order_for] = { name: item.order_for, total_price: 0 };
-              invoice.push(this[item.order_for]);
+              invoice1.push(this[item.order_for]);
              }
              this[item.order_for].total_price += item.total_price;
           }
 
-          invoice = sort_by_key(invoice, 'total_price');
-          res.status(200).send(invoice);
+          invoice1 = sort_by_key(invoice1, 'total_price');
+          res.status(200).send(invoice1);
 
 }
 
@@ -82,6 +81,7 @@ exports.largestUnits = function(req, res){
   //     db.close();
   //   });
   // })
+
   var lookup = {};
   var items = jsonData;
 
