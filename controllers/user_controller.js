@@ -4,7 +4,7 @@ var mongoose = require('mongoose');
 var con = 'mongodb+srv://priyanka:ginni0207@cluster0-gbjzd.mongodb.net/mydb?retryWrites=true&w=majority';
 let jsonData = require('./convertcsv.json');
 var invoice = [];
-var units = [];
+var result = [];
 
 exports.largestInvoice = function(req, res){
   // mongoose.connect(con, (err, db) => {
@@ -90,11 +90,11 @@ exports.largestUnits = function(req, res){
 
     if (!this[item.order_for]) {
       this[item.order_for] = { name: item.order_for, total_units: 0 };
-      units.push(this[item.order_for]);
+      result.push(this[item.order_for]);
      }
      this[item.order_for].total_units += Math.ceil(item.total_units);
   }
 
-  units = sort_by_key(units, 'total_units');
-  res.status(200).send(units);
+  result = sort_by_key(result, 'total_units');
+  res.status(200).send(result);
 }
