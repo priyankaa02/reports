@@ -3,8 +3,6 @@ var router = express.Router();
 var mongoose = require('mongoose');
 var con = 'mongodb+srv://priyanka:ginni0207@cluster0-gbjzd.mongodb.net/mydb?retryWrites=true&w=majority';
 let jsonData = require('./convertcsv.json');
-let result = []
-
 
 function sort_by_key(array, key)
 {
@@ -38,20 +36,23 @@ exports.largestUnits = function(req, res){
   //     db.close();
   //   });
   // })
+  let result = []
+  setTimeout(function () {
+    var lookup = {};
+    var items = jsonData;
 
-  var lookup = {};
-  var items = jsonData;
+    for (var item, i = 0; item = items[i++];) {
+      var name = item.order_for;
 
-  for (var item, i = 0; item = items[i++];) {
-    var name = item.order_for;
+      if (!this[item.order_for]) {
+        this[item.order_for] = { name: item.order_for, total_units: 0 };
+        result.push(this[item.order_for]);
+       }
+       this[item.order_for].total_units += Math.ceil(item.total_units);
+    }
 
-    if (!this[item.order_for]) {
-      this[item.order_for] = { name: item.order_for, total_units: 0 };
-      result.push(this[item.order_for]);
-     }
-     this[item.order_for].total_units += Math.ceil(item.total_units);
-  }
+    result = sort_by_key(result, 'total_units');
+    res.status(200).send(result);
+  }, 100)
 
-  result = sort_by_key(result, 'total_units');
-  res.status(200).send(result);
 }
